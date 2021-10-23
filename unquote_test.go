@@ -28,13 +28,14 @@ var _ = Describe("assignment value", func() {
 			ok  bool
 		}{
 			// GOOD
-			{in: ``, out: "", ok: true},
-			{in: `aöc`, out: "aöc", ok: true},
-			{in: `"aöc"`, out: "aöc", ok: true},
-			{in: `'abc'`, out: "abc", ok: true},
-			{in: `"a\"\$\"c"`, out: "a\"$\"c", ok: true},
-			{in: `"a\"ö\"c"`, out: "a\"ö\"c", ok: true},
-			{in: `'a\"\$\"c'`, out: "a\"$\"c", ok: true},
+			{in: ``, out: ``, ok: true},
+			{in: `aöc`, out: `aöc`, ok: true},
+			{in: `"aöc"`, out: `aöc`, ok: true},
+			{in: `'abc'`, out: `abc`, ok: true},
+			{in: `"a\"\$\"c"`, out: `a"$"c`, ok: true},
+			{in: `"a\"ö\"c"`, out: `a"ö"c`, ok: true},
+			{in: `'a\"\$\"c'`, out: `a"$"c`, ok: true},
+			{in: `'a\\\$b'`, out: `a\$b`, ok: true},
 			// BAD
 			{in: `"\abc`, ok: false},
 			{in: `"abc`, ok: false},

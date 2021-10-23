@@ -21,28 +21,36 @@ import (
 )
 
 // Unquote unquotes and unescapes a variable assignment value as necessary, per
+// the "specification" in
 // https://www.freedesktop.org/software/systemd/man/os-release.html.
 func Unquote(in string) (string, error) {
 	if in == "" {
 		return "", nil
 	}
-	// The variable assignment value can be enclosed in single or double quotes.
-	// Or rather, must be enclosed for certain value contents.
+	// As per the aforementioned specification, the value of the variable
+	// assignment can be enclosed in single or double quotes. Or rather, the
+	// value must be enclosed for certain values.
 	quote := in[0]
 	if quote != '"' && quote != '\'' {
-		// Unqouted assignment value.
+		// It's an unqouted assignment value which we simply return verbatim.
 		return in, nil
 	}
-	// Is the easy route available, as no escapes have been used?
+	// Okay, so the assignment value is quotes. But, is the easy route
+	// available, as no escapes have been used?
 	if !strings.Contains(in, "\\") {
+		// Make sure there is the correct quote at the end of the assignment
+		// value and then return everything between the single or double quotes.
 		if in[len(in)-1] != quote {
 			return "", errors.New("malformed assignment value: missing final quote")
 		}
 		return in[1 : len(in)-1], nil
 	}
-	// Nope, now work on the escapes...
-	out := make([]byte, 0, 3*len(in)/2) // ...as does strconv.unquote to avoid additional allocs
-	in = in[1:]                         // skip leading quote, cheap slice operation
+	// Nope, we now need to work on the escapes, and we need to do so one after
+	// the other. The rationale is that separate consecutive string replacement
+	// operations can yield rather unexpected results, especially when placing
+	// escaping backslashes and then immediately escaping something else...
+	out := make([]byte, 0, len(in))
+	in = in[1:] // skip leading quote, it's a cheap slice operation
 	for len(in) > 0 && in[0] != quote {
 		r, mb, tail, err := unescapeChar(in)
 		if err != nil {
@@ -58,7 +66,7 @@ func Unquote(in string) (string, error) {
 		}
 		in = tail
 	}
-	// Ensure that we've reached THE END.
+	// Ensure that we've reached THE END correctly...
 	if len(in) != 1 || in[0] != quote {
 		return "", errors.New("malformed assignment value: missing terminating quote")
 	}
