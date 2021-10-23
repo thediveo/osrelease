@@ -16,6 +16,23 @@ Oh, and this module has _tests_.
 
 There's a reason why we call it the "_pedantic_" parser after all.
 
+## Usage
+
+Simply get the OS identification variables using `osrelease.New()`. That's all.
+
+```go
+package main
+
+import "github.com/thediveo/osrelease"
+
+func main() {
+    vars := osrelease.New()
+    for name, value := range vars {
+        println(name, "=", value)
+    }
+}
+```
+
 ## ⚖️ Copyright and License
 
 `osrelease` is Copyright 2021 Harald Albrecht, and licensed under the Apache

@@ -38,9 +38,10 @@ func new(base string) map[string]string {
 	return NewFromName(base + "/usr/lib/os-release")
 }
 
-// NewFromName returns the variable assignments from the file with the specified
-// path. It returns nil if the file does not exist. It returns an empty
-// variables set if the file is empty or only contains empty line and comments.
+// NewFromName returns the variable assignments from the file (in os-release
+// format) with the specified path. It returns nil if the file does not exist.
+// It returns an empty variables map if the file is empty or only contains empty
+// line and comments.
 func NewFromName(name string) map[string]string {
 	f, err := os.Open(name)
 	if err != nil {

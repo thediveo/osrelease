@@ -20,8 +20,8 @@ import (
 	"unicode/utf8"
 )
 
-// Unquote unquotes and unescapes a variable assignment value as necessary, per
-// the "specification" in
+// Unquote unquotes and unescapes a variable assignment value as necessary. It
+// follows the "specification" in
 // https://www.freedesktop.org/software/systemd/man/os-release.html.
 func Unquote(in string) (string, error) {
 	if in == "" {
