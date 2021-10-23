@@ -1,7 +1,7 @@
 <!-- markdownlint-disable-next-line MD022 -->
 # A Pedantic `os-release` Parser
 
-[![GitHub](https://img.shields.io/github/license/thediveo/osrelease)](https://img.shields.io/github/license/thediveo/osrelease)
+[![License](https://img.shields.io/github/license/thediveo/osrelease)](https://img.shields.io/github/license/thediveo/osrelease)
 ![build and test](https://github.com/thediveo/osrelease/workflows/build%20and%20test/badge.svg?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thediveo/osrelease)](https://goreportcard.com/report/github.com/thediveo/osrelease)
 
