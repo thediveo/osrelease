@@ -16,9 +16,9 @@ package osrelease
 
 import (
 	"errors"
+	"io"
 	"os"
 	"strings"
-	"testing/iotest"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -87,10 +87,25 @@ BAR="Baz"`))
 	})
 
 	It("returns nil map when reader fails", func() {
-		// iotest ❤
 		Expect(
-			assignmentsFromReader(iotest.ErrReader(errors.New("DOH!"))),
+			assignmentsFromReader(ErrReader(errors.New("DOH!"))),
 		).To(BeNil())
 	})
 
 })
+
+// ErrReader returns an io.Reader that returns 0, err from all Read calls. As
+// ErrReader doesn't exist in older Go versions, we are bringing it here in
+// ourselves.
+func ErrReader(err error) io.Reader {
+	return &errReader{err: err}
+}
+
+type errReader struct {
+	err error
+}
+
+// Read always return 0, err for all calls.
+func (r *errReader) Read(p []byte) (int, error) {
+	return 0, r.err
+}
