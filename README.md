@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/github/license/thediveo/osrelease)](https://img.shields.io/github/license/thediveo/osrelease)
 ![build and test](https://github.com/thediveo/osrelease/workflows/build%20and%20test/badge.svg?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thediveo/osrelease)](https://goreportcard.com/report/github.com/thediveo/osrelease)
+![Coverage](https://img.shields.io/badge/Coverage-100.0%25-brightgreen)
 
 `osrelease` is a Go module implementing a slightly pedantic parser for the
 os-release file format, as specified in
@@ -33,7 +34,7 @@ func main() {
 }
 ```
 
-## ⚖️ Copyright and License
+## Copyright and License
 
-`osrelease` is Copyright 2021 Harald Albrecht, and licensed under the Apache
+`osrelease` is Copyright 2021-23 Harald Albrecht, and licensed under the Apache
 License, Version 2.0.
