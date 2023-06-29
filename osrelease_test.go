@@ -22,6 +22,7 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	. "github.com/thediveo/success"
 )
 
 var _ = Describe("os-release", func() {
@@ -74,10 +75,10 @@ var _ = Describe("os-release", func() {
 	})
 
 	It("reads assignments from a reader", func() {
-		vars := assignmentsFromReader(strings.NewReader(`
+		vars := Successful(assignmentsFromReader(strings.NewReader(`
 # This is a test.
 FOO=Bar
-BAR="Baz"`))
+BAR="Baz"`)))
 		Expect(vars).NotTo(BeNil())
 		Expect(vars).To(HaveLen(2))
 		Expect(vars).To(And(
@@ -89,7 +90,7 @@ BAR="Baz"`))
 	It("returns nil map when reader fails", func() {
 		Expect(
 			assignmentsFromReader(ErrReader(errors.New("DOH!"))),
-		).To(BeNil())
+		).Error().To(HaveOccurred())
 	})
 
 })

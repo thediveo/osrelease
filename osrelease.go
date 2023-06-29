@@ -43,9 +43,17 @@ func new(base string) map[string]string {
 // It returns an empty variables map if the file is empty or only contains empty
 // line and comments.
 func NewFromName(name string) map[string]string {
+	vars, _ := NewFromNameErr(name)
+	return vars
+}
+
+// NewFromNameErr returns the variable assignments from the file (in os-release
+// format) with the specified path or an error if the file doesn't exists or
+// cannot be read.
+func NewFromNameErr(name string) (map[string]string, error) {
 	f, err := os.Open(name)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	defer f.Close()
 	return assignmentsFromReader(f)
@@ -53,7 +61,7 @@ func NewFromName(name string) map[string]string {
 
 // assignmentsFromReader reads variable value assignments from the specified
 // reader. It returns nil in case the reader failed (not EOF).
-func assignmentsFromReader(r io.Reader) map[string]string {
+func assignmentsFromReader(r io.Reader) (map[string]string, error) {
 	variables := map[string]string{}
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
@@ -64,9 +72,9 @@ func assignmentsFromReader(r io.Reader) map[string]string {
 		variables[variable] = value
 	}
 	if err := scanner.Err(); err != nil {
-		return nil
+		return nil, err
 	}
-	return variables
+	return variables, nil
 }
 
 // assignment returns the variable name and its (unquoted and unescaped) value,
