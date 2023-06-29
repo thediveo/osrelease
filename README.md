@@ -34,6 +34,10 @@ func main() {
 }
 ```
 
+## Contributing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Copyright and License
 
 `osrelease` is Copyright 2021-23 Harald Albrecht, and licensed under the Apache
