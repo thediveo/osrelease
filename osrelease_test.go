@@ -16,9 +16,9 @@ package osrelease
 
 import (
 	"errors"
-	"io"
 	"os"
 	"strings"
+	"testing/iotest"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -26,6 +26,10 @@ import (
 )
 
 var _ = Describe("os-release", func() {
+
+	It("returns an error", func() {
+		Expect(NewFromNameErr("/not-existing")).Error().To(HaveOccurred())
+	})
 
 	It("finds system os-release information", func() {
 		_, err1 := os.Stat("/etc/os-release")
@@ -39,12 +43,18 @@ var _ = Describe("os-release", func() {
 		Expect(vars).To(HaveKey("ID"))
 	})
 
+	It("returns os-release information from the specified place", func() {
+		vars := NewFromName("_testdata/etc/etc/os-release")
+		Expect(vars).To(HaveLen(1))
+		Expect(vars).To(HaveKeyWithValue("OSRELEASE", "/etc/os-release"))
+	})
+
 	It("finds os-release information", func() {
-		vars := new("./test/etc")
+		vars := NewFS(os.DirFS("_testdata/etc"))
 		Expect(vars).To(HaveLen(1))
 		Expect(vars).To(HaveKeyWithValue("OSRELEASE", "/etc/os-release"))
 
-		vars = new("./test/usr")
+		vars = NewFS(os.DirFS("_testdata/usr"))
 		Expect(vars).To(HaveLen(1))
 		Expect(vars).To(HaveKeyWithValue("OSRELEASE", "/usr/lib/os-release"))
 	})
@@ -89,24 +99,8 @@ BAR="Baz"`)))
 
 	It("returns nil map when reader fails", func() {
 		Expect(
-			assignmentsFromReader(ErrReader(errors.New("DOH!"))),
+			assignmentsFromReader(iotest.ErrReader(errors.New("DOH!"))),
 		).Error().To(HaveOccurred())
 	})
 
 })
-
-// ErrReader returns an io.Reader that returns 0, err from all Read calls. As
-// ErrReader doesn't exist in older Go versions, we are bringing it here in
-// ourselves.
-func ErrReader(err error) io.Reader {
-	return &errReader{err: err}
-}
-
-type errReader struct {
-	err error
-}
-
-// Read always return 0, err for all calls.
-func (r *errReader) Read(p []byte) (int, error) {
-	return 0, r.err
-}
